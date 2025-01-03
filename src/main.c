@@ -3,19 +3,59 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <arpa/inet.h> // inet_addr()
+#include <stdio.h>
+#include <stdlib.h>
+#include <strings.h> // bzero()
+#include <sys/socket.h>
+#include <unistd.h> // read(), write(), close()
 
 #define MAX_COLUMNS 0
 #define PLAYER_SPEED 0.2f
 #define MAX_JUMP_HEIGHT 3.0f
 #define JUMP_SPEED 1.0f
 #define FALL_SPEED 1.0f
+#define MAX 80
+#define PORT 9000
+#define IP "127.0.0.1"
 
 int main(int argc, char *argv[]) {
-    const int screen_width = 800;
-    const int screen_height = 450;
+    //! SERVER CONNECTION
+    int sockfd;
+    struct sockaddr_in servaddr;
+
+    //create and verify socket
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if(sockfd == -1) {
+        printf("failed to create socket... \n");
+        exit(EXIT_FAILURE);
+    }
+    else {
+        printf("socket created... \n");
+    }
+
+
+    // assign ip and port
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_addr.s_addr = inet_addr(IP);
+    servaddr.sin_port = htons(PORT);
+
+    if(connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) != 0) {
+        printf("failed to connect to server... \n");
+        exit(EXIT_FAILURE);
+    }
+
+    char buff[MAX];
+        bzero(buff, sizeof(buff));
+        read(sockfd, buff, sizeof(buff));
+    printf("Buffer: %s\n", buff);
+    //! EOS
+
+
+    const int screen_width = 1080;
+    const int screen_height = 720;
 
     InitWindow(screen_width, screen_height, "raylib");
-
 
     //! CAMERA INIT
     Camera camera = {0};
@@ -23,7 +63,7 @@ int main(int argc, char *argv[]) {
     camera.target = (Vector3){0.0f, 0.0f, 0.0f};
     camera.up = (Vector3){0.0f, 1.0f, 0.0f};
     camera.projection = CAMERA_ORTHOGRAPHIC;
-    camera.fovy = 20.0f; // near plane width in CAMERA_ORTHOGRAPHIC
+    camera.fovy = 20.0f;
     CameraYaw(&camera, -135 * DEG2RAD, true);
     CameraPitch(&camera, -45 * DEG2RAD, true, true, false);
     camera.projection = CAMERA_ORTHOGRAPHIC;
@@ -179,19 +219,19 @@ int main(int argc, char *argv[]) {
             (Rectangle){90, 90, GetScreenWidth() - 180, GetScreenHeight() - 180};
         Rectangle hardBorder =
             (Rectangle){20, 20, GetScreenWidth() -40 , GetScreenHeight() - 40};
-        DrawRectangleRec(softBorder, (Color){0, 117, 44, 125} );
-        DrawRectangleRec(hardBorder, (Color){255, 0, 44, 125} );
+        /* DrawRectangleRec(softBorder, (Color){0, 117, 44, 125} ); */
+        /* DrawRectangleRec(hardBorder, (Color){255, 0, 44, 125} ); */
 
         if (screenPosition.x < softBorder.x || screenPosition.y < softBorder.y 
             || screenPosition.x > (softBorder.x + softBorder.width) || screenPosition.y > (softBorder.y + softBorder.height) ) {
         if (screenPosition.x < hardBorder.x || screenPosition.y < hardBorder.y 
             || screenPosition.x > (hardBorder.x + hardBorder.width) || screenPosition.y > (hardBorder.y + hardBorder.height) ) {
-                printf("HARD CONTACT Position: (%f, %f)\n", screenPosition.x, screenPosition.y);
+                /* printf("HARD CONTACT Position: (%f, %f)\n", screenPosition.x, screenPosition.y); */
             } else {
-                printf("SOFT CONTACT Position: (%f, %f)\n", screenPosition.x, screenPosition.y);
+                /* printf("SOFT CONTACT Position: (%f, %f)\n", screenPosition.x, screenPosition.y); */
             }
         } else {
-                printf("NO CONTACT Position: (%f, %f)\n", screenPosition.x, screenPosition.y);
+                /* printf("NO CONTACT Position: (%f, %f)\n", screenPosition.x, screenPosition.y); */
         }
         //! EOS
 
@@ -210,6 +250,8 @@ int main(int argc, char *argv[]) {
     }
 
     CloseWindow();
+
+    close(sockfd);
 
     return EXIT_SUCCESS;
 }
