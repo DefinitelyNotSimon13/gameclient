@@ -1,0 +1,4 @@
+.cache
+.direnv
+a.out
+build
