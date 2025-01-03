@@ -1,0 +1,13 @@
+[
+  {
+    "arguments": [
+      "/nix/store/xcn9p4xxfbvlkpah7pwchpav4ab9d135-gcc-wrapper-14-20241116/bin/gcc",
+      "-c",
+      "-I",
+      "./external/raylib-5.5/src/",
+      "src/main.c"
+    ],
+    "directory": "/home/simon/1_Coding/raylib-c",
+    "file": "/home/simon/1_Coding/raylib-c/src/main.c"
+  }
+]

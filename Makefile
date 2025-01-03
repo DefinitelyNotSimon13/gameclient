@@ -9,5 +9,5 @@ run:
 	./a.out
 
 clean:
-	rm a.out compile_commands.json
+	rm a.out compile_commands.json -f
 
