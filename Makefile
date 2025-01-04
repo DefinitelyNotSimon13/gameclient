@@ -17,7 +17,6 @@ FLAGS := -I $(RAYLIB) -L $(RAYLIB)
 INCLUDE_DIRS := -I include -I $(RAYLIB)
 LIB_DIRS := -L $(RAYLIB)
 
-# (Optional) Generate .d dependency files | saw this, not sure? gotta read up on it 
 # -MMD: Generate dependecy info; -MP: Add phony targets for each dependency
 DEPFLAGS := -MMD -MP
 
@@ -34,7 +33,6 @@ DEP := $(OBJ:.o=.d)
 ###############################################################################
 # Primary Targets
 ###############################################################################
-
 all: $(TARGET)
 
 $(TARGET): $(OBJ)

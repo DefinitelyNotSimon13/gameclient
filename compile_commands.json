@@ -30,6 +30,25 @@
       "./external/raylib-5.5/src/",
       "-c",
       "-o",
+      "build/environment.o",
+      "src/environment.c"
+    ],
+    "directory": "/home/simon/1_Coding/raylib-c",
+    "file": "/home/simon/1_Coding/raylib-c/src/environment.c",
+    "output": "/home/simon/1_Coding/raylib-c/build/environment.o"
+  },
+  {
+    "arguments": [
+      "/nix/store/xcn9p4xxfbvlkpah7pwchpav4ab9d135-gcc-wrapper-14-20241116/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-std=c23",
+      "-I",
+      "include",
+      "-I",
+      "./external/raylib-5.5/src/",
+      "-c",
+      "-o",
       "build/game.o",
       "src/game.c"
     ],

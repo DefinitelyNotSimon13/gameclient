@@ -1,48 +1,43 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"net"
-	"os"
+    "fmt"
+    "log"
+    "net"
+    "os"
 )
 
 func main() {
-	// Set the address to listen on
-	address := "localhost:9000"
-	listener, err := net.Listen("tcp", address)
-	if err != nil {
-		log.Fatal("Error starting server:", err)
-		os.Exit(1)
-	}
-	defer listener.Close()
+    address := "localhost:9000"
 
-	fmt.Println("Server is listening on", address)
+    udpAddr, err := net.ResolveUDPAddr("udp", address)
+    if err != nil {
+        log.Fatal("Error resolving UDP address:", err)
+        os.Exit(1)
+    }
 
-	for {
-		// Accept incoming connections
-		conn, err := listener.Accept()
-		if err != nil {
-			log.Println("Error accepting connection:", err)
-			continue
-		}
+    udpConn, err := net.ListenUDP("udp", udpAddr)
+    if err != nil {
+        log.Fatal("Error starting UDP server:", err)
+        os.Exit(1)
+    }
+    defer udpConn.Close()
 
-		// Handle the connection in a new goroutine
-		go handleConnection(conn)
-	}
-}
+    fmt.Println("UDP server is listening on", address)
 
-func handleConnection(conn net.Conn) {
-	// Ensure the connection is closed when we're done
-	defer conn.Close()
+    buf := make([]byte, 1024)
+    for {
+        n, remoteAddr, err := udpConn.ReadFromUDP(buf)
+        if err != nil {
+            log.Println("Error reading UDP data:", err)
+            continue
+        }
+        fmt.Printf("Received UDP data from %v: %s\n", remoteAddr, string(buf[:n]))
 
-	// Send a greeting message
-	message := "Hello you!"
-	_, err := conn.Write([]byte(message))
-	if err != nil {
-		log.Println("Error sending message:", err)
-		return
-	}
-
-	fmt.Println("Sent greeting to", conn.RemoteAddr())
+        // response := "General Kenobi!"
+        // _, err = udpConn.WriteToUDP([]byte(response), remoteAddr)
+        // if err != nil {
+        //     log.Println("Error sending UDP response:", err)
+        // }
+    }
 }
