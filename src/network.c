@@ -8,6 +8,7 @@
 #include <fcntl.h>
 
 
+// non-blocking mode vs select() ?!
 int make_socket_nonblocking(int sockfd);
 
 connection_t *create_connection(const char* ip, int port) {
