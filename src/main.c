@@ -27,27 +27,44 @@ int main(int argc, char *argv[]) {
     Player player;
     init_player(&player, (Vector3){0.0f, 1.0f, 0.0f});
 
-    connection_t *conn = create_connection(IP, PORT);
-    if (!conn) {
+    connection_t *udpConn = create_connection(UDP_CONNECTION, IP, PORT);
+    if (!udpConn) {
+        printf("Failed to create UDP connection!\n");
         exit(EXIT_FAILURE);
     }
 
+
+    printf("--- UDP ---\n");
     printf("Writing to socket...\n");
     char* msg = "Hello, there!";
-    write_to_socket(conn, msg, strlen(msg));
+    write_to_socket(udpConn, msg, strlen(msg));
 
 
     printf("Reading from socket...\n");
-    char buf[1024];
-    ssize_t read = read_from_socket(conn, buf, 1024);
-    printf("Read %zd bytes from socket.\n", read);
-    printf("Buffer: %s\n", buf);
+    char udpBuf[1024];
+    ssize_t readUdp = read_from_socket(udpConn, udpBuf, 1024);
+    printf("Read %zd bytes from socket.\n", readUdp);
+    printf("Buffer: %s\n", udpBuf);
 
-    /* run_game_loop(&player, &camera, conn); */
+    printf("--- TCP ---\n");
+    connection_t *tcpConn = create_connection(TCP_CONNECTION, IP, PORT);
+    if (!tcpConn) {
+        printf("Failed to create TCP connection!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    printf("Reading from socket...\n");
+    char tcpBuf[1024];
+    ssize_t readTcp = read_from_socket(tcpConn, tcpBuf, 1024);
+    printf("Read %zd bytes from socket.\n", readTcp);
+    printf("Buffer: %s\n", tcpBuf);
+
+    /* run_game_loop(&player, &camera, udpConn); */
 
     CloseWindow();
 
-    cleanup_connection(conn);
+    cleanup_connection(udpConn);
+    cleanup_connection(tcpConn);
 
     return EXIT_SUCCESS;
 }

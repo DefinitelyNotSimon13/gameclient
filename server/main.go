@@ -1,43 +1,90 @@
 package main
 
+// Things that will need to be saved during runtime:
+// - connected players
+// - active sessions
+// - sessions -> players
+// Possible future persitant:
+// - "stats"
+
 import (
-    "fmt"
-    "log"
-    "net"
-    "os"
+	"fmt"
+	"log"
+	"net"
+	"os"
 )
 
 func main() {
-    address := "localhost:9000"
+	addr := "localhost:9000"
 
-    udpAddr, err := net.ResolveUDPAddr("udp", address)
-    if err != nil {
-        log.Fatal("Error resolving UDP address:", err)
-        os.Exit(1)
-    }
+	// --- TCP ---
+	listener, err := net.Listen("tcp", addr)
+	if err != nil {
+		log.Fatal("Error starting TCP server:", err)
+		os.Exit(1)
+	}
+	defer listener.Close()
+	fmt.Println("TCP server is listening on", addr)
 
-    udpConn, err := net.ListenUDP("udp", udpAddr)
-    if err != nil {
-        log.Fatal("Error starting UDP server:", err)
-        os.Exit(1)
-    }
-    defer udpConn.Close()
+	go func() {
+		for {
+			tcpConn, err := listener.Accept()
+			fmt.Println("Received TCP connection request...")
+			if err != nil {
+				log.Println("Error accepting TCP connection:", err)
+				continue
+			}
+			go handleTCPConnection(tcpConn)
+		}
+	}()
 
-    fmt.Println("UDP server is listening on", address)
+	// --- UDP ---
+	udpAddr, err := net.ResolveUDPAddr("udp", addr)
+	if err != nil {
+		log.Fatal("Error resolving UDP addr:", err)
+		os.Exit(1)
+	}
 
-    buf := make([]byte, 1024)
-    for {
-        n, remoteAddr, err := udpConn.ReadFromUDP(buf)
-        if err != nil {
-            log.Println("Error reading UDP data:", err)
-            continue
-        }
-        fmt.Printf("Received UDP data from %v: %s\n", remoteAddr, string(buf[:n]))
+	udpConn, err := net.ListenUDP("udp", udpAddr)
+	if err != nil {
+		log.Fatal("Error starting UDP server:", err)
+		os.Exit(1)
+	}
+	defer udpConn.Close()
 
-        // response := "General Kenobi!"
-        // _, err = udpConn.WriteToUDP([]byte(response), remoteAddr)
-        // if err != nil {
-        //     log.Println("Error sending UDP response:", err)
-        // }
-    }
+	fmt.Println("UDP server is listening on", addr)
+
+	handleUDPConnection(udpConn)
+}
+
+func handleTCPConnection(conn net.Conn) {
+	defer conn.Close()
+
+	message := "Hello from TCP server!"
+	_, err := conn.Write([]byte(message))
+	if err != nil {
+		log.Println("Error sending TCP message:", err)
+		return
+	}
+
+	fmt.Println("Sent greeting to", conn.RemoteAddr())
+}
+
+func handleUDPConnection(conn *net.UDPConn) {
+	buf := make([]byte, 1024)
+
+	for {
+		n, remoteAddr, err := conn.ReadFromUDP(buf)
+		if err != nil {
+			log.Println("Error reading UDP data:", err)
+			continue
+		}
+		fmt.Printf("Received UDP data from %v: %s\n", remoteAddr, string(buf[:n]))
+
+		response := "General Kenobi!"
+		_, err = conn.WriteToUDP([]byte(response), remoteAddr)
+		if err != nil {
+			log.Println("Error sending UDP response:", err)
+		}
+	}
 }

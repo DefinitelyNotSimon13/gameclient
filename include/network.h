@@ -4,12 +4,15 @@
 #include <netinet/in.h>
 #include <stddef.h>
 
+#define TCP_CONNECTION 0
+#define UDP_CONNECTION 1
+
 typedef struct {
     int sockfd;
     struct sockaddr_in servaddr;
 } connection_t;
 
-connection_t *create_connection(const char* ip, int port);
+connection_t *create_connection(int connection_type, const char* ip, int port);
 
 void cleanup_connection(connection_t *conn);
 
