@@ -22,27 +22,28 @@
       {
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
-            clang-tools
-            clang
-            libGL
             bear
+            clang
+            clang-tools
+            libGL
+            wayland-scanner
+          ];
+          nativeBuildInputs = with pkgs; [
+            clang
+            clang-tools
             entr
-
+            libxkbcommon
+            llvmPackages_latest.clang
+            llvmPackages_latest.libcxx
+            llvmPackages_latest.libllvm
+            llvmPackages_latest.lldb
+            wayland
             xorg.libX11
             xorg.libX11.dev
             xorg.libXcursor
             xorg.libXi
             xorg.libXinerama
             xorg.libXrandr
-            wayland
-          ];
-          nativeBuildInputs = with pkgs; [
-            clang-tools
-            clang
-            llvmPackages_latest.lldb
-            llvmPackages_latest.libllvm
-            llvmPackages_latest.libcxx
-            llvmPackages_latest.clang
           ];
 
           shellHook = ''

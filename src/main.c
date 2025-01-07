@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
     printf("Read %zd bytes from socket.\n", readTcp);
     printf("Buffer: %s\n", tcpBuf);
 
-    /* run_game_loop(&player, &camera, udpConn); */
+    run_game_loop(&player, &camera, udpConn);
 
     CloseWindow();
 

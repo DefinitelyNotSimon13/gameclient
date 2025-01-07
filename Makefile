@@ -10,7 +10,7 @@ TARGET := build/game
 CC := gcc
 C_STD := c23
 CFLAGS := -Wall -Wextra -std=$(C_STD)
-LDFLAGS := -lraylib -lGL -lm -lpthread -ldl -lrt -lwayland-client
+LDFLAGS := -lraylib -lGL -lm -lpthread -ldl -lrt -lwayland-client -lxkbcommon
 FLAGS := -I $(RAYLIB) -L $(RAYLIB)
 
 # Include and library dirs
