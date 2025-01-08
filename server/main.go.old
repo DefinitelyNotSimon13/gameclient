@@ -37,21 +37,22 @@ func main() {
 	// --- TCP ---
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {
-		log.Fatal("Error starting TCP server:", err)
-		os.Exit(1)
+		log.Fatalf("Error starting TCP server: %v\n", err)
 	}
 	defer listener.Close()
-	fmt.Println("TCP server is listening on", addr)
+	log.Printf("TCP server is listening on %s\n", addr)
 
-	id := uint32(0)
+
 	go func() {
+
+	var id uint32
 		for {
 			tcpConn, err := listener.Accept()
-			fmt.Println("Received TCP connection request...")
 			if err != nil {
-				log.Println("Error accepting TCP connection:", err)
+				log.Printf("Error accepting TCP connection: %v\n", err)
 				continue
 			}
+
 			id++
 			go handleTCPConnection(tcpConn, id)
 		}
@@ -60,18 +61,16 @@ func main() {
 	// --- UDP ---
 	udpAddr, err := net.ResolveUDPAddr("udp", addr)
 	if err != nil {
-		log.Fatal("Error resolving UDP addr:", err)
-		os.Exit(1)
+		log.Fatalf("Error resolving UDP addr: %v\n", err)
 	}
 
 	udpConn, err := net.ListenUDP("udp", udpAddr)
 	if err != nil {
-		log.Fatal("Error starting UDP server:", err)
-		os.Exit(1)
+		log.Fatalf("Error starting UDP server: %v\n")
 	}
 	defer udpConn.Close()
 
-	fmt.Println("UDP server is listening on", addr)
+	log.Printf("UDP server is listening on %s\n", addr)
 
 	handleUDPConnection(udpConn)
 }
@@ -82,14 +81,15 @@ func handleTCPConnection(conn net.Conn, id uint32) {
 	bs := make([]byte, 4)
 	binary.LittleEndian.PutUint32(bs, id)
 
-	fmt.Println("Writing %s", bs)
+    log.Printf("Assigned ID %d -> Writing bytes: %v\n", id, bs)
+
 	_, err := conn.Write(bs)
 	if err != nil {
-		log.Println("Error sending TCP message:", err)
+		log.Printf("Error sending TCP message: %v\n", err)
 		return
 	}
 
-	fmt.Println("Sent greeting to", conn.RemoteAddr())
+	log.Printf("Sent greeting to %v\n", conn.RemoteAddr())
 }
 
 func handleUDPConnection(conn *net.UDPConn) {
@@ -98,12 +98,13 @@ func handleUDPConnection(conn *net.UDPConn) {
 	for {
 		n, remoteAddr, err := conn.ReadFromUDP(buf)
 		if err != nil {
-			log.Println("Error reading UDP data:", err)
+			log.Printf("Error reading UDP data: %v\m", err)
 			continue
 		}
 
 		if n < 1 {
-			log.Println("Received less then 1 byte, can't read version")
+			log.Println("Received less then 1 byte, can't read version\n")
+			continue
 		}
 
 		// first 4 bytes from
@@ -112,7 +113,7 @@ func handleUDPConnection(conn *net.UDPConn) {
 		case PacketVersion0:
 			handlePacketV0(conn, buf, n, remoteAddr)
 		default:
-			fmt.Printf("Unknown version (%d) from %v\n", version, remoteAddr)
+			log.Printf("Unknown version (%d) from %v\n", version, remoteAddr)
 		}
 	}
 }
@@ -125,15 +126,15 @@ func handlePacketV0(conn *net.UDPConn, data []byte, length int, remoteAddr *net.
 
 	senderId := binary.LittleEndian.Uint32(data[1 : 1+4])
 
-	xBits := binary.LittleEndian.Uint32(data[5 : 5+4])
-	yBits := binary.LittleEndian.Uint32(data[9 : 9+4])
-	zBits := binary.LittleEndian.Uint32(data[13 : 13+4])
+	xBits := binary.LittleEndian.Uint32(data[5 : 9])
+	yBits := binary.LittleEndian.Uint32(data[9 : 13])
+	zBits := binary.LittleEndian.Uint32(data[13 : 17])
 
 	x := math.Float32frombits(xBits)
 	y := math.Float32frombits(yBits)
 	z := math.Float32frombits(zBits)
 
-	fmt.Printf("V0 packet from %v with ID %d => x=%f, y=%f, z=%f\n", remoteAddr, senderId, x, y, z)
+	log.Printf("V0 packet from %v with ID %d => x=%f, y=%f, z=%f\n", remoteAddr, senderId, x, y, z)
 
 	mu.Lock()
 	if _, ok := udpClients[senderId]; !ok {
@@ -143,8 +144,6 @@ func handlePacketV0(conn *net.UDPConn, data []byte, length int, remoteAddr *net.
 	mu.Unlock()
 
 	mu.Lock()
-	defer mu.Unlock()
-
 	for clientId, clientAddr := range udpClients {
 		if clientId == senderId {
 			continue
@@ -155,4 +154,5 @@ func handlePacketV0(conn *net.UDPConn, data []byte, length int, remoteAddr *net.
 			log.Printf("Error broadcasting to client %d at %v: %v\n", clientId, clientAddr, err)
 		}
 	}
+	mu.Unlock()
 }
