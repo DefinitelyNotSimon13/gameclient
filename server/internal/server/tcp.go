@@ -6,14 +6,14 @@ import (
 	"net"
 )
 
-// handleTCPConnection sends the client an ID and logs some messages.
+// handleTCPConnection sends the client an Id and logs some messages.
 func (s *Server) handleTCPConnection(conn net.Conn, id uint32) {
 	defer conn.Close()
 
 	bs := make([]byte, 4)
 	binary.LittleEndian.PutUint32(bs, id)
 
-	log.Printf("Assigned TCP ID %d -> Writing bytes: %v\n", id, bs)
+	log.Printf("Assigned TCP Id %d -> Writing bytes: %v\n", id, bs)
 	if _, err := conn.Write(bs); err != nil {
 		log.Printf("Error sending TCP message: %v\n", err)
 		return

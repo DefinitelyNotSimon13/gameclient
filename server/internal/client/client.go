@@ -5,16 +5,16 @@ import (
 )
 
 type Client struct {
-	id         uint32
-	udpAddress *net.UDPAddr
+	Id         uint32
+	UDPAddr *net.UDPAddr
 	// Pointer or not?
-	tcpConn *net.Conn
+	TCPConn *net.Conn
 	// Status?
 }
 
 func NewClient(id uint32, tcpConn *net.Conn) *Client {
 	return &Client {
-		id: id,
-		tcpConn: tcpConn,
+		Id: id,
+		TCPConn: tcpConn,
 	}
 }

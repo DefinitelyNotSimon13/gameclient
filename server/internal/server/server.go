@@ -13,8 +13,7 @@ type Server struct {
 	tcpListener net.Listener
 	udpConn     *net.UDPConn
 
-	udpClients map[uint32]*net.UDPAddr
-	clients	[]*client.Client
+	clients	map[uint32]*client.Client
 	mu         sync.Mutex
 
 
@@ -26,7 +25,7 @@ type Server struct {
 func NewServer(addr string) *Server {
 	return &Server{
 		addr:       addr,
-		udpClients: make(map[uint32]*net.UDPAddr),
+		clients: make(map[uint32]*client.Client),
 	}
 }
 
@@ -74,8 +73,8 @@ func (s *Server) acceptTCPConnections() {
 
 		// We increment the connectionId here for each new connection
 
-		s.clients = append(s.clients, client.NewClient(s.connectionId, &tcpConn))
 		s.connectionId++
+		s.clients[s.connectionId] = client.NewClient(s.connectionId, &tcpConn)
 
 		// Handle each connection in its own goroutine
 		go s.handleTCPConnection(tcpConn, s.connectionId)

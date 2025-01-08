@@ -9,8 +9,8 @@ const (
 	PacketVersion0 = 0
 )
 
-// parseSenderID extracts the sender ID from bytes 1..4 (little-endian).
-func parseSenderID(data []byte) uint32 {
+// parseSenderId extracts the sender Id from bytes 1..4 (little-endian).
+func parseSenderId(data []byte) uint32 {
 	return binary.LittleEndian.Uint32(data[1:5])
 }
 
