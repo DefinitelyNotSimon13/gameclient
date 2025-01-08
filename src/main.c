@@ -15,8 +15,8 @@
 #define FALL_SPEED 1.0f
 #define PORT 9000
 #define IP "127.0.0.1"
-#define SCREEN_WIDTH 900
-#define SCREEN_HEIGHT 600
+#define SCREEN_WIDTH 700
+#define SCREEN_HEIGHT 400
 
 int main(int argc, char *argv[]) {
     init_game(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -37,13 +37,13 @@ int main(int argc, char *argv[]) {
     printf("--- UDP ---\n");
     printf("Writing to socket...\n");
     char* msg = "Hello, there!";
-    write_to_socket(udpConn, msg, strlen(msg));
+    /* write_to_socket(udpConn, msg, strlen(msg)); */
 
 
     printf("Reading from socket...\n");
     char udpBuf[1024];
-    ssize_t readUdp = read_from_socket(udpConn, udpBuf, 1024);
-    printf("Read %zd bytes from socket.\n", readUdp);
+    /* ssize_t readUdp = read_from_socket(udpConn, udpBuf, 1024); */
+    /* printf("Read %zd bytes from socket.\n", readUdp); */
     printf("Buffer: %s\n", udpBuf);
 
     printf("--- TCP ---\n");
@@ -56,9 +56,11 @@ int main(int argc, char *argv[]) {
     printf("Reading from socket...\n");
     char tcpBuf[1024];
     ssize_t readTcp = read_from_socket(tcpConn, tcpBuf, 1024);
+    uint32_t *id = (uint32_t*)tcpBuf;
     printf("Read %zd bytes from socket.\n", readTcp);
-    printf("Buffer: %s\n", tcpBuf);
+    printf("Connected with ID: %d\n", *id);
 
+    udpConn->client_id = *id;
     run_game_loop(&player, &camera, udpConn);
 
     CloseWindow();

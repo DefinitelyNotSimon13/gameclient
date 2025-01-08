@@ -19,3 +19,10 @@ void draw_player(Vector3 playerPosition) {
     DrawCube(playerPosition, 0.5f, 0.5f, 0.5f, PURPLE);
     DrawCubeWires(playerPosition, 0.5f, 0.5f, 0.5f, DARKPURPLE);
 }
+
+void draw_other_player(Vector3 position) {
+    // The player cube
+    DrawCube(position, 0.5f, 0.5f, 0.5f, PINK);
+    DrawCubeWires(position, 0.5f, 0.5f, 0.5f, DARKGRAY);
+
+}

@@ -1,7 +1,12 @@
 #include "network.h"
+#include "raylib.h"
+#include "packet.h"
 #include "sys/socket.h"
 #include <arpa/inet.h>
+#include <sys/select.h>
+#include <sys/ioctl.h>
 #include <fcntl.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -66,3 +71,75 @@ ssize_t write_to_socket(connection_t *conn, const char *data, size_t size) {
         return -1;
     return write(conn->sockfd, data, size);
 }
+
+PacketV0 *read_position(connection_t *conn) {
+    if(!conn) {
+        perror("NO CONNNNNNNNNNN\n");
+        exit(1);
+    }
+
+    int len = 0;
+    ioctl(conn->sockfd, FIONREAD, &len);
+    printf("Len: %d\n", len);
+
+    if(len == 0) {
+        return nullptr;
+    }
+    char buffer[BYTES_AMOUNT_VERSION_0];
+    ssize_t bytes_read = read(conn->sockfd,buffer, BYTES_AMOUNT_VERSION_0);
+
+    PacketV0 *packet = deserialize_packet_v0(buffer, BYTES_AMOUNT_VERSION_0);
+    if(!packet) {
+        perror("Deserialization of packet failed");
+        return nullptr;
+    }
+    return packet;
+}
+
+
+ssize_t send_position(connection_t *conn, const Vector3 *position) {
+    char buffer[BYTES_AMOUNT_VERSION_0];
+    if(serialize_packet_v0(buffer, BYTES_AMOUNT_VERSION_0, &(PacketV0){conn->client_id, *position}) == 0) {
+        perror("Failed to build packet\n");
+    }
+
+    return write(conn->sockfd, buffer, BYTES_AMOUNT_VERSION_0);
+
+    /* sprintf(buffer, "%07.3f%07.3f%07.3f", position->x, position->y,
+     * position->z); */
+
+    /* printf("Got: %s", buffer); */
+}
+
+/* void double_to_binary(char *buffer, double value) { */
+/**/
+/*     union { */
+/*         double d; */
+/*         uint64_t u; */
+/*     } converter; */
+/**/
+/*     converter.d = value; */
+/**/
+/*     for (int bit = 63; bit >= 0; --bit) { */
+/*         buffer[63 - bit] = ((converter.u >> bit) & 1) ? '1' : '0'; */
+/*     } */
+/**/
+/* } */
+/**/
+/* void send_double_raw(int sockfd, double value) { */
+/*     // We'll reinterpret the double as 8 raw bytes. */
+/*     union { */
+/*         double d; */
+/*         uint8_t bytes[8]; */
+/*     } converter; */
+/**/
+/*     converter.d = value; */
+/**/
+/*     printf("Sending: %hhn\n", converter.bytes); */
+/*     // Send exactly 8 bytes to the socket. */
+/*     // This writes the bits (in the platform’s native endianness). */
+/*     ssize_t sent = send(sockfd, converter.bytes, 8, 0); */
+/*     if (sent < 0) { */
+/*         perror("send failed"); */
+/*     } */
+/* } */

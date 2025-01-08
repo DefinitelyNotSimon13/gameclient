@@ -3,6 +3,9 @@
 
 #include "movement.h"
 #include "network.h"
+#include "packet.h"
+
+typedef PacketV0 OtherPlayer;
 
 void init_game(int screen_width, int screen_height);
 
