@@ -27,16 +27,14 @@
             clang-tools
             libGL
             wayland-scanner
+            libclang
+            libgcc
           ];
           nativeBuildInputs = with pkgs; [
             clang
             clang-tools
             entr
             libxkbcommon
-            llvmPackages_latest.clang
-            llvmPackages_latest.libcxx
-            llvmPackages_latest.libllvm
-            llvmPackages_latest.lldb
             wayland
             xorg.libX11
             xorg.libX11.dev
