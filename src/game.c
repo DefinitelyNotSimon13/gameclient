@@ -7,6 +7,8 @@
 #include "ui.h"
 #include <stdio.h>
 
+#define nullptr ((void*)0)
+
 void init_game(int screen_width, int screen_height) {
     InitWindow(screen_width, screen_height, "raylib");
     SetTargetFPS(60);

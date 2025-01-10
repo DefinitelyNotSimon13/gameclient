@@ -8,9 +8,8 @@ TARGET := build/game
 # Compiler/Linker
 ###############################################################################
 CC := gcc
-C_STD := c23
-# CFLAGS := -Wall -Wextra -std=$(C_STD)
-CFLAGS := -Wall -Wextra
+C_STD := c2x
+CFLAGS := -Wall -Wextra -std=$(C_STD)
 LDFLAGS := -lraylib -lGL -lm -lpthread -ldl -lrt -lwayland-client -lxkbcommon
 FLAGS := -I $(RAYLIB) -L $(RAYLIB)
 

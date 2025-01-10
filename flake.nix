@@ -27,6 +27,7 @@
             clang-tools
             libGL
             wayland-scanner
+            dockerfile-language-server-nodejs
             libclang
             libgcc
           ];
@@ -36,12 +37,14 @@
             entr
             libxkbcommon
             wayland
+
             xorg.libX11
             xorg.libX11.dev
             xorg.libXcursor
             xorg.libXi
             xorg.libXinerama
             xorg.libXrandr
+
           ];
 
           shellHook = ''

@@ -18,6 +18,8 @@
 #define SCREEN_WIDTH 700
 #define SCREEN_HEIGHT 400
 
+#define nullptr ((void*)0)
+
 int main(int argc, char *argv[]) {
     init_game(SCREEN_WIDTH, SCREEN_HEIGHT);
 
