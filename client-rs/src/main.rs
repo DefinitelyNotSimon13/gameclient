@@ -1,20 +1,27 @@
+use bitflags::bitflags;
 use color_eyre::Result;
 use raylib::prelude::*;
 use std::io::prelude::*;
 use std::net::{TcpStream, UdpSocket};
 
-fn main() -> Result<()> {
-    let mut stream = TcpStream::connect("127.0.0.1:9000")?;
-    let mut socket = UdpSocket::bind("[::]:0")?;
+mod packet;
 
-    let mut buf = [0; 10];
-    let (amt, src) = socket.recv_From
+bitflags! {
+    pub struct Flags: u8 {
+        const A = 0b00000000;
+    }
+}
 
-    let mut buf = [0; 10];
-    socket.send_to(&buf, "127.0.0.1:9000")?;
-
-    stream.write(&[1])?;
-    stream.read(&mut [0; 128])?;
+#[tokio::main]
+async fn main() -> Result<()> {
+    // let mut stream = TcpStream::connect("127.0.0.1:9000")?;
+    // let mut socket = UdpSocket::bind("[::]:0")?;
+    //
+    // let mut buf = [0; 10];
+    // socket.send_to(&buf, "127.0.0.1:9000")?;
+    //
+    // stream.write(&[1])?;
+    // stream.read(&mut [0; 128])?;
 
     let (mut rl, thread) = raylib::init().size(640, 480).title("Hello, World").build();
 
