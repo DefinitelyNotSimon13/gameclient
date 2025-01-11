@@ -1,0 +1,9 @@
+[package]
+name = "client-rs"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+color-eyre = "0.6.3"
+raylib = { version = "5.0.2", features = ["wayland"] }
+thiserror = "2.0.11"
