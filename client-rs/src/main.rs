@@ -1,27 +1,27 @@
-use bitflags::bitflags;
 use color_eyre::Result;
+use log::info;
+use network::init_player;
+use network::tcp::TcpConn;
 use raylib::prelude::*;
-use std::io::prelude::*;
-use std::net::{TcpStream, UdpSocket};
 
+mod game;
+mod network;
 mod packet;
-
-bitflags! {
-    pub struct Flags: u8 {
-        const A = 0b00000000;
-    }
-}
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    // let mut stream = TcpStream::connect("127.0.0.1:9000")?;
-    // let mut socket = UdpSocket::bind("[::]:0")?;
-    //
-    // let mut buf = [0; 10];
-    // socket.send_to(&buf, "127.0.0.1:9000")?;
-    //
-    // stream.write(&[1])?;
-    // stream.read(&mut [0; 128])?;
+    env_logger::init();
+    let addr = "127.0.0.1:9000";
+
+    info!("initializing tcp connection...");
+
+    let mut tcp_conn = TcpConn::new(addr).await?;
+    let client_id = init_player("Simon", &mut tcp_conn).await?;
+    info!("initialized play with id {:#?}", client_id);
+
+    loop {}
+
+    return Ok(());
 
     let (mut rl, thread) = raylib::init().size(640, 480).title("Hello, World").build();
 
