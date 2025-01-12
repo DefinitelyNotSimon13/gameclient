@@ -1,6 +1,6 @@
 use flags::Flags;
-use types::{PacketTypeState, PlayerInit, SessionInit};
 use thiserror::Error;
+use types::{PacketTypeState, PlayerInit, SessionInit};
 use uuid;
 use uuid::Uuid;
 use version::VersionError;

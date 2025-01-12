@@ -1,7 +1,7 @@
 use std::f32::consts::PI;
 
-const JUMP_SPEED: f32 = 1.0;
-const FALL_SPEED: f32 = 1.0;
+const JUMP_SPEED: f32 = 6.0;
+const FALL_SPEED: f32 = 6.0;
 const MAX_JUMP_HEIGHT: f32 = 3.0;
 
 #[derive(Default)]
@@ -22,9 +22,8 @@ impl Jump {
         self.start_height = start_height;
     }
 
-    pub fn perform_jump(&mut self, player_y: f32) -> f32 {
-        println!("JUMP");
-        self.jump_progress += (0.1 * JUMP_SPEED);
+    pub fn perform_jump(&mut self, player_y: f32, delta_time: f32) -> f32 {
+        self.jump_progress += delta_time * JUMP_SPEED;
 
         if self.jump_progress >= (PI / 2.0) {
             self.jump_progress = 0.0;
@@ -36,16 +35,15 @@ impl Jump {
         return self.start_height + MAX_JUMP_HEIGHT * f32::sin(self.jump_progress);
     }
 
-    pub fn perform_fall(&mut self, player_y: f32) -> f32 {
-        println!("FALL");
-        println!("Player Y: {} - Start: {}", player_y, self.start_height);
-        if (player_y <= self.start_height) {
+    pub fn perform_fall(&mut self, player_y: f32, delta_time: f32) -> f32 {
+        if player_y <= self.start_height {
             self.jump_progress = 0.0;
             self.is_falling = false;
             return self.start_height;
         }
 
-        self.jump_progress += (0.1 * FALL_SPEED);
+        // Use delta_time to scale the fall progress
+        self.jump_progress += delta_time * FALL_SPEED;
 
         return self.start_height + (MAX_JUMP_HEIGHT * f32::cos(self.jump_progress));
     }

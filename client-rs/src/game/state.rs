@@ -2,17 +2,18 @@ use uuid::Uuid;
 
 use crate::network::tcp::TcpConn;
 
+use super::player::LocalPlayer;
+
 pub struct GameState {
-    username: String,
+    pub local_player: LocalPlayer,
     client_id: Uuid,
     tcpConn: TcpConn,
-    // udpConn: UdpConn,
 }
 
 impl GameState {
-    pub fn init(username: &str, client_id: Uuid, tcpConn: TcpConn) -> Self {
+    pub fn init(local_player: LocalPlayer, client_id: Uuid, tcpConn: TcpConn) -> Self {
         Self {
-            username: username.to_string(),
+            local_player,
             client_id,
             tcpConn,
         }

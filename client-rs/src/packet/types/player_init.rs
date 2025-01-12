@@ -1,5 +1,5 @@
-use crate::packet::{Packet, PlayerInit};
 use crate::packet::flags::Flags;
+use crate::packet::{Packet, PlayerInit};
 use thiserror::Error;
 use uuid::Uuid;
 

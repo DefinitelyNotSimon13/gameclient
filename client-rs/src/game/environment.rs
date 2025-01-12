@@ -1,11 +1,8 @@
-use color_eyre::owo_colors::OwoColorize;
 use raylib::{
     color::Color,
     math::{Vector2, Vector3},
     prelude::RaylibDraw3D,
 };
-
-use super::player::Player;
 
 pub fn draw_environment(d: &mut impl RaylibDraw3D) {
     // Ground
