@@ -4,6 +4,8 @@ use game::Game;
 use log::info;
 use network::init_player;
 use network::tcp::TcpConn;
+use packet::types::SessionInit;
+use packet::Packet;
 use raylib::ffi::TraceLogLevel;
 
 mod game;
@@ -24,6 +26,13 @@ async fn main() -> Result<()> {
     let mut tcp_conn = TcpConn::new(addr).await?;
     let client_id = init_player("Simon", &mut tcp_conn).await?;
     info!("initialized play with id {:#?}", client_id);
+
+    let token = Some("gmCOC9");
+    // let session_init_request = Packet::<SessionInit>::new(client_id, None)?;
+    let session_init_request = Packet::<SessionInit>::new(client_id, token)?;
+    tcp_conn.send_packet(&session_init_request).await?;
+
+    // return Ok(());
 
     let camera = Camera::init(&rl);
     Game::init("Simon", client_id, tcp_conn, &mut rl).run(rl, thread, camera);
