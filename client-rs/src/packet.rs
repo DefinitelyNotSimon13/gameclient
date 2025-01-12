@@ -1,5 +1,5 @@
 use flags::Flags;
-use types::{ErrorPacket, PacketTypeState, PlayerInit, SessionInit};
+use types::{PacketTypeState, PlayerInit, SessionInit};
 use thiserror::Error;
 use uuid;
 use uuid::Uuid;

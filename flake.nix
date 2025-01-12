@@ -25,10 +25,6 @@
             alsa-lib
             bacon
             bear
-            cargo
-            cargo-deny
-            cargo-edit
-            cargo-watch
             clang
             clang-tools
             cmake
@@ -46,9 +42,6 @@
             openssl
             pkg-config
             raylib
-            rust-analyzer
-            rustc
-            rustfmt
             rustup
             wayland
             wayland-protocols
@@ -66,6 +59,7 @@
             clang
             clang-tools
             entr
+            pkg-config
             libxkbcommon
             wayland
             wayland-protocols

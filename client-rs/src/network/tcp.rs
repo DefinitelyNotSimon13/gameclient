@@ -1,6 +1,6 @@
 use tokio::net::TcpStream;
 
-use crate::packet::{Packet, ToBytes};
+use crate::packet::ToBytes;
 
 use super::NetworkError;
 use tokio::io::AsyncWriteExt;
