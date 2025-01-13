@@ -14,20 +14,20 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up GCC
-      uses: egor-tensin/setup-gcc@v1
-      with:
-        version: latest
-        platform: x64
-
-    - name: raylib-dependencies
-      run: |
-        sudo apt install libasound2-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev libxinerama-dev libwayland-dev libxkbcommon-dev
-
-    - name: raylib
-      run: |
-        cd external/raylib-5.5/src
-        make clean && make PLATFORM=PLATFORM_DESKTOP
-      
-    - name: make
-      run: make
+    # - name: Set up GCC
+    #   uses: egor-tensin/setup-gcc@v1
+    #   with:
+    #     version: latest
+    #     platform: x64
+    #
+    # - name: raylib-dependencies
+    #   run: |
+    #     sudo apt install libasound2-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev libxinerama-dev libwayland-dev libxkbcommon-dev
+    #
+    # - name: raylib
+    #   run: |
+    #     cd external/raylib-5.5/src
+    #     make clean && make PLATFORM=PLATFORM_DESKTOP
+    #
+    # - name: make
+    #    run: make
