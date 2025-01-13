@@ -27,7 +27,7 @@ async fn main() -> Result<()> {
     let client_id = init_player("Simon", &mut tcp_conn).await?;
     info!("initialized play with id {:#?}", client_id);
 
-    let token = Some("gmCOC9");
+    let token = Some("XMP9H7");
     // let session_init_request = Packet::<SessionInit>::new(client_id, None)?;
     let session_init_request = Packet::<SessionInit>::new(client_id, token)?;
     tcp_conn.send_packet(&session_init_request).await?;

@@ -1,0 +1,28 @@
+@startuml
+participant Client
+participant Server
+collections Clients
+collections Session
+
+autonumber "<b>[00]"
+group TCP
+Client -> Server : PlayerInit Request
+Server -> Clients : Save Username
+Server -> Server  : Generate ClientId
+Server --> Client : ServerInit Response
+Client -> Server : SessionInit Request
+Server -> Session : Create Session
+Server -> Server : Create SessionToken
+Server --> Client : SessionInit Response
+end
+group UDP
+Client -> Server : UDP Discovery
+
+loop
+autonumber stop
+Client -> Server : Current Position
+Server -> Client : Other Player Positions
+end
+end
+
+@enduml
